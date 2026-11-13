@@ -36,7 +36,6 @@ namespace ClimateGSR.Models
                 .ThenBy(player => player.FirstName)
                 .ThenBy(player => player.LastName)
                 .ThenBy(player => player.Id)
-                .Take(10)
                 .ToList();
 
             var entries = new List<LeaderboardEntryViewModel>();
@@ -63,7 +62,17 @@ namespace ClimateGSR.Models
                 });
             }
 
-            return entries;
+            var top = entries.Take(10).ToList();
+
+            //if the logged in player isn't in the top 10, add their own row at the end
+            var me = entries.FirstOrDefault(e => e.IsCurrentPlayer);
+            if (me != null && !top.Contains(me))
+            {
+                me.IsOutsideTop = true;
+                top.Add(me);
+            }
+
+            return top;
         }
     }
 }
