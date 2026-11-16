@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.IO;
@@ -20,6 +22,8 @@ namespace ClimateGSR.Models
         /// <param name="context">The database context to seed.</param>
         public static void Seed(ClimateGSRDbContext context)
         {
+            SeedGuestAccount(context);
+
             if (context.Countries.Any()) return;
             string dir = HostingEnvironment.MapPath("~/App_Data/")
                 ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data");
@@ -119,5 +123,33 @@ namespace ClimateGSR.Models
             context.SaveChanges();
 
         }
+
+        //guest account
+        private static void SeedGuestAccount(ClimateGSRDbContext context)
+        {
+            const string email = "guest@guest.com";
+            const string password = "Guesting_1";
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
+            if (userManager.FindByEmail(email) != null) return;   // already there, so do nothing
+
+            var user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                FirstName = "Guest",
+                LastName = "User"
+            };
+
+            var result = userManager.Create(user, password);
+            if (!result.Succeeded)
+                throw new InvalidOperationException("Could not seed guest account: " + string.Join("; ", result.Errors));
+
+            context.Members.Add(new Member { ApplicationUserId = user.Id });
+            context.SaveChanges();
+        }
+
     }
 }
