@@ -9,5 +9,7 @@ namespace ClimateGSR.Models.ViewModels
         public bool IsCurrentPlayer { get; set; }
 
         public int AllTimeScore { get; set; }
+
+        public bool IsOutsideTop { get; set; }  
     }
 }

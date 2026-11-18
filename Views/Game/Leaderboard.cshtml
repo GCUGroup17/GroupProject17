@@ -46,6 +46,14 @@
                                     }
                                     @foreach (var player in Model)
                                     {
+
+                                        if (player.IsOutsideTop)
+                                        {
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">&hellip;</td>
+                                            </tr>
+                                        }
+
                                         <tr class="@(player.IsCurrentPlayer ? "table-success" : null)">
                                             <th scope="row">@player.Rank</th>
                                             <td>
@@ -62,6 +70,14 @@
                                     }
                                 </tbody>
                             </table>
+
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <p class="text-center mt-3">
+                                    @Html.ActionLink("Log in", "Login", "Account", null, new { @class = "login-link" })
+                                    to see your own rank.
+                                </p>
+                            }
                         </div>
 
                         <div class="text-center mt-3">
