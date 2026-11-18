@@ -1,0 +1,33 @@
+name: Build and Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore packages
+      run: nuget restore ClimateGSR.sln
+
+    - name: Build solution
+      run: msbuild ClimateGSR.sln /p:Configuration=Release
+
+    - name: Run Unit Tests
+      run: vstest.console.exe **\*UnitTests.dll
+
+    - name: Run Integration Tests
+      run: vstest.console.exe **\*IntegrationTests.dll
