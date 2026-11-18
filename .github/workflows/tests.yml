@@ -1,0 +1,101 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    # .NET Framework 4.7.2 / ASP.NET MVC 5 needs Windows (MSBuild, IIS Express, LocalDB)
+    runs-on: windows-2022
+    env:
+      SITE_PORT: 8080
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      # Web project uses packages.config; test projects use PackageReference
+      - name: Restore web project packages
+        run: nuget restore packages.config -PackagesDirectory packages
+
+      # Building the test projects also builds ClimateGSR.csproj (ProjectReference)
+      - name: Build
+        run: |
+          msbuild tests/ClimateGSR.UnitTests/ClimateGSR.UnitTests.csproj -restore /p:Configuration=Release /v:minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          msbuild tests/ClimateGSR.ApiTests/ClimateGSR.ApiTests.csproj -restore /p:Configuration=Release /v:minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # ---------------- Unit tests (no server, no database) ----------------
+      - name: Run unit tests
+        run: >
+          dotnet test tests/ClimateGSR.UnitTests/ClimateGSR.UnitTests.csproj
+          --configuration Release --no-build
+          --logger "trx;LogFileName=unit-tests.trx"
+          --results-directory TestResults
+
+      # ---------------- API tests (real HTTP against IIS Express) ----------------
+      - name: Start SQL LocalDB
+        run: |
+          if (-not (Get-Command sqllocaldb -ErrorAction SilentlyContinue)) {
+            choco install sqllocaldb -y --no-progress
+            $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+          }
+          sqllocaldb info
+          sqllocaldb create MSSQLLocalDB 2>$null   # fine if it already exists
+          sqllocaldb start MSSQLLocalDB
+          sqllocaldb info MSSQLLocalDB
+
+      - name: Start site in IIS Express
+        run: |
+          $iis = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
+          if (-not (Test-Path $iis)) {
+            choco install iisexpress -y --no-progress
+          }
+          Start-Process -FilePath $iis `
+            -ArgumentList "/path:$env:GITHUB_WORKSPACE", "/port:$env:SITE_PORT", '/systray:false' `
+            -RedirectStandardOutput iisexpress.log -RedirectStandardError iisexpress.err.log
+
+          # First request compiles the site, so give it time
+          $url = "http://localhost:$env:SITE_PORT/Home/About"
+          for ($i = 1; $i -le 60; $i++) {
+            try {
+              $r = Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 30
+              if ($r.StatusCode -eq 200) { Write-Host "Site is up after $i attempt(s)"; exit 0 }
+            } catch { Write-Host "Waiting for site... ($i) $($_.Exception.Message)" }
+            Start-Sleep -Seconds 3
+          }
+          Get-Content iisexpress.log, iisexpress.err.log -ErrorAction SilentlyContinue
+          throw 'Site did not start'
+
+      - name: Run API tests
+        env:
+          CLIMATEGSR_BASE_URL: http://localhost:${{ env.SITE_PORT }}
+          CLIMATEGSR_SEED_DB: "true"
+        run: >
+          dotnet test tests/ClimateGSR.ApiTests/ClimateGSR.ApiTests.csproj
+          --configuration Release --no-build
+          --logger "trx;LogFileName=api-tests.trx"
+          --results-directory TestResults
+
+      - name: Stop IIS Express
+        if: always()
+        run: Stop-Process -Name iisexpress -Force -ErrorAction SilentlyContinue
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            TestResults/**/*.trx
+            iisexpress*.log
+          if-no-files-found: ignore
