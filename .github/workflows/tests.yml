@@ -70,9 +70,3 @@ jobs:
         CLIMATEGSR_SEED_DB: "true"
       run: |
         vstest.console.exe tests\ClimateGSR.ApiTests\bin\Release\net472\ClimateGSR.ApiTests.dll
-        
-
-    - name: Find Test DLLs
-      shell: powershell
-      run: |
-        Get-ChildItem -Path . -Recurse -Filter "*Tests.dll" | Select-Object FullName
