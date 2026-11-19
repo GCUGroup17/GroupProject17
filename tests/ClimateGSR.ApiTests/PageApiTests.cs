@@ -15,6 +15,7 @@ namespace ClimateGSR.ApiTests
         [DataRow("/Home/Contact", "<html")]
         [DataRow("/Account/Login", "Welcome Back")]
         [DataRow("/Account/Register", "Create Account")]
+        // Verifies that public pages load successfully and contain their expected page text.
         public async Task PublicPage_Returns200(string path, string expectedText)
         {
             var html = await AssertOkHtml(await Get(path));
@@ -25,6 +26,7 @@ namespace ClimateGSR.ApiTests
         [DataTestMethod]
         [DataRow("/Account/Login")]
         [DataRow("/Account/Register")]
+        // Checks that account login and registration forms include an anti-forgery token.
         public async Task AccountForms_IncludeAntiForgeryToken(string path)
         {
             var html = await AssertOkHtml(await Get(path));
@@ -36,12 +38,14 @@ namespace ClimateGSR.ApiTests
         [DataRow("/Manage")]
         [DataRow("/Manage/ChangePassword")]
         [DataRow("/Manage/EditAccount")]
+        // Verifies that account-management pages redirect unauthenticated visitors to login.
         public async Task ManagePages_WhenLoggedOut_RedirectToLogin(string path)
         {
             AssertRedirectsTo(await Get(path), "/Account/Login");
         }
 
         [TestMethod]
+        // Checks that invalid login credentials re-render the login page with an error message.
         public async Task Login_WithBadCredentials_ShowsLoginPageAgain()
         {
             var page = await AssertOkHtml(await Get("/Account/Login"));
@@ -63,6 +67,7 @@ namespace ClimateGSR.ApiTests
         [DataTestMethod]
         [DataRow("/DoesNotExist")]
         [DataRow("/Home/DoesNotExist")]
+        // Ensures unknown application URLs return a not-found status.
         public async Task UnknownUrl_Returns404(string path)
         {
             Assert.AreEqual(HttpStatusCode.NotFound, (await Get(path)).StatusCode);

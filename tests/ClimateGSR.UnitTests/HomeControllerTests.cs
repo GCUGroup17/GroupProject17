@@ -52,12 +52,14 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that the home action returns a view result.
         public void Index_ReturnsView()
         {
             Assert.IsInstanceOfType(_controller.Index(), typeof(ViewResult));
         }
 
         [TestMethod]
+        // Checks that the About action provides its application description message.
         public void About_ReturnsViewWithMessage()
         {
             var result = (ViewResult)_controller.About();
@@ -66,6 +68,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that the Contact action provides its application contact message.
         public void Contact_ReturnsViewWithMessage()
         {
             var result = (ViewResult)_controller.Contact();
@@ -74,6 +77,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that climate data includes every GeoNames country with unique ISO codes.
         public void GetClimateData_ReturnsEveryCountryFromGeoNames()
         {
             var stats = GetStats();
@@ -84,6 +88,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that countries in the climate-data result are sorted by name.
         public void GetClimateData_IsSortedByCountryName()
         {
             var names = GetStats().Select(s => s.Country).ToList();
@@ -92,12 +97,14 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures that the world aggregate is not returned as an individual country.
         public void GetClimateData_DoesNotIncludeWorldAggregate()
         {
             Assert.IsFalse(GetStats().Any(s => s.IsoCode == "WLD"));
         }
 
         [TestMethod]
+        // Confirms that the United Kingdom record uses the latest figures and expected formatted units.
         public void GetClimateData_UnitedKingdom_HasLatestFiguresFormatted()
         {
             var uk = GetStats().Single(s => s.IsoCode == "GBR");
@@ -119,6 +126,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that very large emissions and population values use billion-unit labels.
         public void GetClimateData_LargeEmitter_UsesBillionTonnes()
         {
             var china = GetStats().Single(s => s.IsoCode == "CHN");
@@ -128,6 +136,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that all formatted fields use the expected units or N/A and per-capita availability is consistent.
         public void GetClimateData_FieldsAreEitherFormattedOrNA()
         {
             foreach (var s in GetStats())

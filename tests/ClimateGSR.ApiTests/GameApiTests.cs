@@ -38,18 +38,21 @@ namespace ClimateGSR.ApiTests
         // ---------- no game in progress ----------
 
         [TestMethod]
+        // Verifies that requesting a game page before starting a game sends the user to the start action.
         public async Task Play_WithoutGame_RedirectsToStart()
         {
             AssertRedirectsTo(await Get("/Game/Play"), "/Game/Start");
         }
 
         [TestMethod]
+        // Verifies that requesting game results before a game exists sends the user to the start action.
         public async Task Result_WithoutGame_RedirectsToStart()
         {
             AssertRedirectsTo(await Get("/Game/Result"), "/Game/Start");
         }
 
         [TestMethod]
+        // Checks that guessing without an anti-forgery token is rejected by the server.
         public async Task Guess_WithoutAntiForgeryToken_IsRejected()
         {
             var response = await PostForm("/Game/Guess", new Dictionary<string, string> { { "guess", "France" } });
@@ -59,6 +62,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Ensures that POST-only game actions cannot be invoked through GET requests.
         public async Task GameActions_RejectGet()
         {
             // Guess/RevealHint/GiveUp are [HttpPost] only
@@ -69,6 +73,7 @@ namespace ClimateGSR.ApiTests
         // ---------- playing a game ----------
 
         [TestMethod]
+        // Checks that starting a game shows round 1 of 5 with the initial prompt and 100 available points.
         public async Task Start_ShowsFirstRoundOfFive()
         {
             var html = await StartGame();
@@ -84,6 +89,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Verifies that revealing a hint adds hint content to the current round page.
         public async Task RevealHint_ShowsAHint()
         {
             var html = await StartGame();
@@ -96,6 +102,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Checks that an incorrect guess returns feedback and reveals an additional hint.
         public async Task WrongGuess_RevealsHintAndShowsFeedback()
         {
             var html = await StartGame();
@@ -108,6 +115,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Verifies that giving up advances the game to round 2 and displays the correct answer.
         public async Task GiveUp_MovesToNextRoundAndShowsAnswer()
         {
             var html = await StartGame();
@@ -120,6 +128,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Ensures that results cannot be viewed until all rounds of the game are complete.
         public async Task Result_BeforeFinishing_RedirectsToPlay()
         {
             await StartGame();
@@ -128,6 +137,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Plays a complete game by giving up on every round and verifies the zero-point guest result.
         public async Task FullGame_GivingUpEveryRound_EndsWithZeroPoints()
         {
             var html = await StartGame();
@@ -159,6 +169,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Confirms that the public leaderboard page loads and identifies itself correctly.
         public async Task Leaderboard_Returns200()
         {
             var html = await AssertOkHtml(await Get("/Game/Leaderboard"));

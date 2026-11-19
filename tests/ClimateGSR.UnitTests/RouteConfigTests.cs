@@ -32,6 +32,7 @@ namespace ClimateGSR.UnitTests
         [DataRow("~/Game/Play", "Game", "Play")]
         [DataRow("~/Game/Leaderboard", "Game", "Leaderboard")]
         [DataRow("~/Account/Login", "Account", "Login")]
+        // Verifies that standard public URLs resolve to their intended controller and action.
         public void DefaultRoute_MapsToControllerAndAction(string url, string controller, string action)
         {
             var data = Resolve(url);
@@ -42,6 +43,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that route IDs are parsed when supplied and remain optional when omitted.
         public void DefaultRoute_IdIsOptional()
         {
             var data = Resolve("~/Game/Play/42");
@@ -51,6 +53,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures ASP.NET resource paths ending in .axd are recognized and stop normal route matching.
         public void AxdResources_AreIgnored()
         {
             var data = Resolve("~/WebResource.axd/abc");

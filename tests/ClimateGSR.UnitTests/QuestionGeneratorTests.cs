@@ -59,6 +59,7 @@ namespace ClimateGSR.UnitTests
         // ---------- GenerateHints ----------
 
         [TestMethod]
+        // Verifies that countries with temperature data receive six distinct, correctly named hint types.
         public void GenerateHints_WithTemperature_ReturnsSixDistinctHintTypes()
         {
             var hints = new QuestionGenerator(null).GenerateHints(UnitedKingdom());
@@ -70,6 +71,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that missing temperature data removes only the temperature hint.
         public void GenerateHints_WithoutTemperature_SkipsTemperatureHint()
         {
             var country = UnitedKingdom();
@@ -82,6 +84,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Confirms that each supported hint type is formatted into a readable user-facing sentence.
         public void GenerateHints_FormatsEachHintReadably()
         {
             var hints = new QuestionGenerator(null).GenerateHints(UnitedKingdom());
@@ -95,6 +98,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures generated hints never expose the country's name directly.
         public void GenerateHints_NeverRevealsTheCountryName()
         {
             var hints = new QuestionGenerator(null).GenerateHints(UnitedKingdom());
@@ -103,6 +107,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that repeated hint generation produces varied hint ordering rather than a fixed sequence.
         public void GenerateHints_OrderIsShuffled()
         {
             var generator = new QuestionGenerator(null);
@@ -118,6 +123,7 @@ namespace ClimateGSR.UnitTests
         // ---------- GetRandomCountry ----------
 
         [TestMethod]
+        // Verifies that requesting a random country from an empty dataset throws an exception.
         public void GetRandomCountry_NoCountries_Throws()
         {
             var generator = GeneratorWith();
@@ -126,6 +132,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that a dataset containing only countries below the population threshold has no selectable result.
         public void GetRandomCountry_OnlySmallCountries_Throws()
         {
             var generator = GeneratorWith(MakeCountry(1, "Tuvalu", 11000), MakeCountry(2, "Nauru", 12000));
@@ -134,6 +141,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures countries with fewer than one million people are excluded from random selection.
         public void GetRandomCountry_ExcludesCountriesUnderOneMillionPeople()
         {
             var generator = GeneratorWith(
@@ -146,6 +154,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Confirms that a country exactly at one million people is included in random selection.
         public void GetRandomCountry_IncludesCountryExactlyAtThreshold()
         {
             var generator = GeneratorWith(MakeCountry(1, "Bordertown", 1000000));
@@ -154,6 +163,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that repeated selection can eventually reach every country that meets the population threshold.
         public void GetRandomCountry_EventuallyPicksEveryQualifyingCountry()
         {
             var generator = GeneratorWith(
@@ -171,6 +181,7 @@ namespace ClimateGSR.UnitTests
         // ---------- GenerateQuestion ----------
 
         [TestMethod]
+        // Verifies that a generated question uses the country name as its answer and includes its hints.
         public void GenerateQuestion_AnswerIsTheCountryName()
         {
             var question = GeneratorWith(UnitedKingdom()).GenerateQuestion();
@@ -186,6 +197,7 @@ namespace ClimateGSR.UnitTests
         [DataRow(312906000.0, "This country emitted about 312.9 million tonnes of CO2 in 2024.")]
         [DataRow(1e6, "This country emitted about 1 million tonnes of CO2 in 2024.")]
         [DataRow(450000.0, "This country emitted about 450 thousand tonnes of CO2 in 2024.")]
+        // Checks that emissions prompts use appropriate billion, million, or thousand units.
         public void GenerateQuestion_FormatsEmissionsPrompt(double tonnes, string expected)
         {
             var country = MakeCountry(1, "Testland", 5000000, tonnes);
