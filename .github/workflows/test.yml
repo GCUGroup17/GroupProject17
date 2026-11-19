@@ -30,3 +30,8 @@ jobs:
       shell: powershell
       run: |
         Get-ChildItem -Path . -Recurse -Filter *.dll | Select-Object FullName
+
+    - name: Find test projects
+      shell: powershell
+      run: |
+        Get-ChildItem -Path . -Recurse -Include *.csproj | Select-Object FullName
