@@ -26,12 +26,24 @@ jobs:
     - name: Build solution
       run: msbuild ClimateGSR.sln /p:Configuration=Release
 
-    - name: Find test assemblies
-      shell: powershell
-      run: |
-        Get-ChildItem -Path . -Recurse -Filter *.dll | Select-Object FullName
+    - name: Build Unit Tests
+      run: msbuild tests\ClimateGSR.UnitTests\ClimateGSR.UnitTests.csproj /p:Configuration=Release
 
-    - name: Find test projects
+    - name: Build API Tests
+      run: msbuild tests\ClimateGSR.ApiTests\ClimateGSR.ApiTests.csproj /p:Configuration=Release
+
+    - name: Setup VSTest
+      uses: darenm/Setup-VSTest@v1
+
+    - name: Run Unit Tests
+      run: |
+        vstest.console.exe tests\ClimateGSR.UnitTests\bin\Release\net472\ClimateGSR.UnitTests.dll
+
+    - name: Run API Tests
+      run: |
+        vstest.console.exe tests\ClimateGSR.ApiTests\bin\Release\net472\ClimateGSR.ApiTests.dll
+
+    - name: Find Test DLLs
       shell: powershell
       run: |
-        Get-ChildItem -Path . -Recurse -Include *.csproj | Select-Object FullName
+        Get-ChildItem -Path . -Recurse -Filter "*Tests.dll" | Select-Object FullName
