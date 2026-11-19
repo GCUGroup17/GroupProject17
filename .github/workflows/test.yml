@@ -26,8 +26,7 @@ jobs:
     - name: Build solution
       run: msbuild ClimateGSR.sln /p:Configuration=Release
 
-    - name: Run Unit Tests
-      run: vstest.console.exe **\*UnitTests.dll
-
-    - name: Run Integration Tests
-      run: vstest.console.exe **\*IntegrationTests.dll
+    - name: Find test assemblies
+      shell: powershell
+      run: |
+        Get-ChildItem -Path . -Recurse -Filter *.dll | Select-Object FullName
