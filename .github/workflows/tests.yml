@@ -39,9 +39,38 @@ jobs:
       run: |
         vstest.console.exe tests\ClimateGSR.UnitTests\bin\Release\net472\ClimateGSR.UnitTests.dll
 
+    - name: Start IIS Express
+      shell: pwsh
+      run: |
+        $iisExpress = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
+        if (-not (Test-Path $iisExpress)) {
+          throw "IIS Express not found at $iisExpress"
+        }
+
+        Start-Process -FilePath $iisExpress `
+          -ArgumentList "/path:$env:GITHUB_WORKSPACE", "/port:8080", "/systray:false"
+
+        $deadline = (Get-Date).AddSeconds(60)
+        do {
+          try {
+            Invoke-WebRequest http://localhost:8080/ -UseBasicParsing -TimeoutSec 5 | Out-Null
+            break
+          } catch {
+            Start-Sleep -Seconds 2
+          }
+        } while ((Get-Date) -lt $deadline)
+
+        if ((Get-Date) -ge $deadline) {
+          throw "The app did not respond at http://localhost:8080/"
+        }
+
     - name: Run API Tests
+      env:
+        CLIMATEGSR_BASE_URL: http://localhost:8080/
+        CLIMATEGSR_SEED_DB: "true"
       run: |
         vstest.console.exe tests\ClimateGSR.ApiTests\bin\Release\net472\ClimateGSR.ApiTests.dll
+        
 
     - name: Find Test DLLs
       shell: powershell
