@@ -36,12 +36,14 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that an empty user and member set produces an empty leaderboard.
         public void NoPlayers_ReturnsEmptyList()
         {
             Assert.AreEqual(0, Leaderboard().Count);
         }
 
         [TestMethod]
+        // Checks descending lifetime-score ranking and the corresponding rank and score values.
         public void RanksByAllTimeScoreDescending()
         {
             AddPlayer("a", "Alice", "Smith", 200, 100);
@@ -56,6 +58,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Confirms that a higher single-game high score breaks an equal lifetime-score tie.
         public void EqualAllTimeScore_HigherHighScoreWins()
         {
             AddPlayer("a", "Alice", "Smith", 300, 200);
@@ -69,6 +72,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that fully tied players share a rank, are ordered by first name, and create a rank gap.
         public void FullTie_SharesRank_AndNextPlayerSkipsAhead()
         {
             AddPlayer("a", "Zed", "Smith", 300, 200);
@@ -83,6 +87,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures the leaderboard is capped at ten entries while preserving the highest scores.
         public void ReturnsAtMostTenPlayers()
         {
             for (int i = 0; i < 15; i++)
@@ -96,6 +101,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that users missing member records are shown with zero lifetime and game values.
         public void UserWithoutMemberRecord_IsListedWithZeroPoints()
         {
             AddPlayer("a", "Alice", "Smith", 200, 100);
@@ -111,6 +117,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that a player's high score uses the larger of their legacy and member values.
         public void HighScore_UsesTheLargerOfLegacyAndMemberScore()
         {
             AddPlayer("a", "Alice", "Smith", 200, memberHighscore: 150, legacyHighScore: 300);
@@ -123,6 +130,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that player names are trimmed and formatted as first name plus last initial.
         public void PlayerName_UsesFirstNameAndLastInitial_Trimmed()
         {
             AddPlayer("a", "  Alice  ", "  smith", 100, 100);
@@ -131,6 +139,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies fallback names for players whose first name or both name fields are missing.
         public void PlayerName_MissingFirstName_FallsBackToPlayer()
         {
             AddPlayer("a", null, "Smith", 100, 100);
@@ -143,6 +152,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that a missing last name produces a player name containing only the first name.
         public void PlayerName_MissingLastName_ShowsFirstNameOnly()
         {
             AddPlayer("a", "Alice", "", 100, 100);
@@ -151,6 +161,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that only the supplied current-user entry is marked as the current player.
         public void MarksTheCurrentPlayer()
         {
             AddPlayer("a", "Alice", "Smith", 200, 100);
@@ -163,6 +174,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Ensures that omitting a current user leaves every leaderboard entry unmarked.
         public void NoCurrentUser_NobodyIsMarked()
         {
             AddPlayer("a", "Alice", "Smith", 200, 100);
@@ -171,6 +183,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that the games-played value is copied from the matching member record.
         public void CopiesGamesPlayedFromMemberRecord()
         {
             AddPlayer("a", "Alice", "Smith", 200, 100, gamesPlayed: 7);

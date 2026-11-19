@@ -24,6 +24,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Verifies that the climate-data endpoint responds successfully with more than 200 country records.
         public async Task GetClimateData_Returns200WithJsonArray()
         {
             var data = await GetClimateData();
@@ -32,6 +33,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Checks that every returned country item contains the expected fields and valid identifying values.
         public async Task GetClimateData_EachItemHasExpectedShape()
         {
             var data = await GetClimateData();
@@ -48,6 +50,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Confirms that the United Kingdom record contains its latest known raw figures and readable units.
         public async Task GetClimateData_ContainsUnitedKingdomWithRawValues()
         {
             var data = await GetClimateData();
@@ -64,6 +67,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Checks that the returned countries appear in ascending order by their first letter.
         public async Task GetClimateData_IsSortedByCountryName()
         {
             var names = (await GetClimateData()).Select(i => (string)i["Country"]).ToList();
@@ -77,6 +81,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Ensures that no ISO country code occurs more than once in the response.
         public async Task GetClimateData_IsoCodesAreUnique()
         {
             var codes = (await GetClimateData()).Select(i => (string)i["IsoCode"]).ToList();
@@ -85,6 +90,7 @@ namespace ClimateGSR.ApiTests
         }
 
         [TestMethod]
+        // Verifies that the climate-data endpoint only accepts GET requests.
         public async Task GetClimateData_RejectsPost()
         {
             var response = await PostForm(Endpoint, new System.Collections.Generic.Dictionary<string, string>());

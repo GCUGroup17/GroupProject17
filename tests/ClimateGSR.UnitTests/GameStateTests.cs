@@ -16,6 +16,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that a newly created game has no questions and starts with zero points.
         public void NewGame_HasEmptyQuestionListAndZeroScore()
         {
             var game = new Game();
@@ -26,6 +27,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that Current resolves to the question at the state's current index.
         public void Current_ReturnsQuestionAtCurrentIndex()
         {
             var state = StateWith(3);
@@ -35,6 +37,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Confirms that the game is unfinished while the current index still points to a question.
         public void Finished_IsFalseWhileQuestionsRemain()
         {
             var state = StateWith(5);
@@ -44,6 +47,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Checks that moving past the final question marks the game as finished.
         public void Finished_IsTrueOncePastLastQuestion()
         {
             var state = StateWith(5);
@@ -53,6 +57,7 @@ namespace ClimateGSR.UnitTests
         }
 
         [TestMethod]
+        // Verifies that a game with no questions is immediately considered finished.
         public void Finished_IsTrueForGameWithNoQuestions()
         {
             Assert.IsTrue(StateWith(0).Finished);
