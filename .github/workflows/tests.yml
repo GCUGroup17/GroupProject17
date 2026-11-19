@@ -32,6 +32,17 @@ jobs:
     - name: Build API Tests
       run: msbuild tests\ClimateGSR.ApiTests\ClimateGSR.ApiTests.csproj /p:Configuration=Release
 
+    - name: Setup VSTest
+      uses: darenm/Setup-VSTest@v1
+
+    - name: Run Unit Tests
+      run: |
+        vstest.console.exe tests\ClimateGSR.UnitTests\bin\Release\net472\ClimateGSR.UnitTests.dll
+
+    - name: Run API Tests
+      run: |
+        vstest.console.exe tests\ClimateGSR.ApiTests\bin\Release\net472\ClimateGSR.ApiTests.dll
+
     - name: Find Test DLLs
       shell: powershell
       run: |
