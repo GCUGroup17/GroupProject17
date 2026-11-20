@@ -48,13 +48,167 @@
         font-weight: bold;
         color: #2d6a4f;
     }
+
+    .home-hero h1 {
+        margin: 0 0 0.35rem;
+        font-size: clamp(1.6rem, 4vw, 2rem);
+        font-weight: 800;
+    }
+
+    .climate-section {
+        margin: 2rem 0;
+        color: #2d4a3e;
+        line-height: 1.7;
+    }
+
+    .climate-section h2 {
+        color: #1b4332;
+        font-size: clamp(1.4rem, 3vw, 1.75rem);
+        font-weight: 750;
+        margin: 0 0 0.85rem;
+    }
+
+    .climate-eyebrow {
+        color: #2d6a4f;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin: 0 0 0.5rem;
+    }
+
+    .climate-intro,
+    .climate-awareness {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .climate-section p:last-child {
+        margin-bottom: 0;
+    }
+
+    .climate-note {
+        background: #f0f8f3;
+        border-left: 4px solid #40916c;
+        border-radius: 0 12px 12px 0;
+        padding: 1.25rem;
+    }
+
+    .climate-note h3,
+    .climate-impact h3 {
+        color: #1b4332;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+    }
+
+    .climate-impact-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .climate-impact {
+        border-top: 3px solid #74c69d;
+        background: #f5faf7;
+        border-radius: 0 0 12px 12px;
+        padding: 1.25rem;
+    }
+
+    .climate-awareness {
+        background: #e8f5ed;
+        border: 1px solid #b7e4c7;
+        border-radius: 16px;
+        padding: 1.75rem;
+    }
+
+    .climate-steps {
+        margin: 0;
+        padding-left: 1.3rem;
+    }
+
+    .climate-steps li {
+        padding-left: 0.35rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .climate-steps li:last-child {
+        margin-bottom: 0;
+    }
+
+    .climate-steps li::marker {
+        color: #2d6a4f;
+        font-weight: 700;
+    }
+
+    .climate-play-link {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.65rem 1.1rem;
+        background: #1b4332;
+        border: 2px solid #1b4332;
+        border-radius: 8px;
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .climate-play-link:hover {
+        background: #2d6a4f;
+        color: #ffffff;
+    }
+
+    .climate-section a:focus-visible {
+        outline: 3px solid #1b4332;
+        outline-offset: 4px;
+    }
+
+    .climate-sources {
+        color: #465e53;
+        font-size: 0.875rem;
+        margin: -0.5rem 0 1.5rem;
+        line-height: 1.7;
+    }
+
+    .climate-sources a {
+        color: #245b43;
+        text-underline-offset: 3px;
+    }
+
+    @@media (max-width: 767px) {
+        .climate-intro,
+        .climate-awareness,
+        .climate-impact-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .climate-awareness {
+            padding: 1.25rem;
+        }
+    }
 </style>
 
 <div class="container-fluid">
     <div class="home-hero">
-        <h2>Climate Awareness Geo-Explorer</h2>
+        <h1>Climate Awareness Geo-Explorer</h1>
         <p>Hover over an outlined country and click to inspect its climate and demographic statistics.</p>
     </div>
+
+    <section class="climate-section climate-intro" aria-labelledby="climate-explained-title">
+        <div>
+            <p class="climate-eyebrow">Understand the bigger picture</p>
+            <h2 id="climate-explained-title">What is climate change?</h2>
+            <p>Climate change is a lasting shift in Earth's temperatures and weather patterns. Today's warming is mainly driven by human activities, especially burning coal, oil and gas. This releases greenhouse gases such as carbon dioxide (CO<sub>2</sub>), which trap extra heat in the atmosphere.</p>
+            <p>Cutting down forests adds to the problem by releasing stored carbon and reducing the number of trees that can absorb CO<sub>2</sub>. The effects reach far beyond warmer days.</p>
+        </div>
+        <aside class="climate-note" aria-labelledby="weather-climate-title">
+            <h3 id="weather-climate-title">Weather or climate?</h3>
+            <p>Weather is what happens today. Climate is the pattern over decades. A cold day can still happen in a warming world.</p>
+        </aside>
+    </section>
 
     <div class="game-container">
         <!--inteactive map container-->
@@ -68,6 +222,44 @@
             </div>
         </div>
     </div>
+
+    <section class="climate-section" aria-labelledby="climate-impacts-title">
+        <p class="climate-eyebrow">A global issue. Everyday impacts.</p>
+        <h2 id="climate-impacts-title">How is it affecting us?</h2>
+        <div class="climate-impact-grid">
+            <article class="climate-impact">
+                <h3>Heat and health</h3>
+                <p>More frequent and intense heatwaves put people's health at risk and make working, learning and staying safe outdoors harder.</p>
+            </article>
+            <article class="climate-impact">
+                <h3>Water, food and homes</h3>
+                <p>Heavier rainfall and worsening drought in many regions can damage homes, disrupt water supplies and reduce harvests, threatening livelihoods and food security.</p>
+            </article>
+            <article class="climate-impact">
+                <h3>Coasts and wildlife</h3>
+                <p>Rising seas increase coastal flooding, while warming oceans and changing habitats put wildlife and the communities that depend on nature under pressure.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="climate-section climate-awareness" aria-labelledby="climate-awareness-title">
+        <div>
+            <p class="climate-eyebrow">Explore. Question. Share.</p>
+            <h2 id="climate-awareness-title">Climate Awareness Game</h2>
+            <p>Climate change can feel distant until you connect it to real places. ClimateGSR brings country statistics into an interactive map and geography guessing game, turning unfamiliar numbers into something you can explore and remember.</p>
+            <a class="climate-play-link" href="@Url.Action("Play", "Game")">Play the geography challenge <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <ol class="climate-steps">
+            <li><strong>Explore a country.</strong> Click the map to discover its emissions, population and average temperature.</li>
+            <li><strong>Compare thoughtfully.</strong> Look at both total emissions and emissions per person: they answer different questions.</li>
+            <li><strong>Keep learning.</strong> Try the game, discuss what surprised you and explore the science behind the numbers.</li>
+        </ol>
+    </section>
+
+    <p class="climate-sources">Learn more from the United Nations:
+        <a href="https://www.un.org/en/climatechange/what-is-climate-change">What is climate change?</a>
+        &middot; <a href="https://www.un.org/en/climatechange/causes-and-effects-climate-change">Causes and effects</a>.
+    </p>
 </div>
 
 <!--leaflet js-->
