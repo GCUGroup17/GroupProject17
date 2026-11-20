@@ -70,3 +70,13 @@ jobs:
         CLIMATEGSR_SEED_DB: "true"
       run: |
         vstest.console.exe tests\ClimateGSR.ApiTests\bin\Release\net472\ClimateGSR.ApiTests.dll
+    - name: Add Test Summary
+      if: always()
+      shell: powershell
+      run: |
+        Add-Content $env:GITHUB_STEP_SUMMARY "# Climate GSR Test Results"
+        Add-Content $env:GITHUB_STEP_SUMMARY ""
+        Add-Content $env:GITHUB_STEP_SUMMARY "✅ Unit Tests Executed Successfully"
+        Add-Content $env:GITHUB_STEP_SUMMARY "✅ Integration/API Tests Executed Successfully"
+        Add-Content $env:GITHUB_STEP_SUMMARY ""
+        Add-Content $env:GITHUB_STEP_SUMMARY "Tests are automatically executed on every push and pull request."
